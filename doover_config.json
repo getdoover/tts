@@ -1,0 +1,60 @@
+{
+    "tts": {
+        "name": "tts",
+        "display_name": "TTS",
+        "type": "DEV",
+        "visibility": "PUB",
+        "allow_many": true,
+        "description": "Integrate with LoRaWAN devices via TTS",
+        "long_description": "README.md",
+        "depends_on": [],
+        "owner_org_key": "FIX-ME",
+        "image_name": "ghcr.io/getdoover/tts:main",
+        "container_registry_profile_key": "FIX-ME",
+        "build_args": "--platform linux/amd64,linux/arm64",
+        "config_schema": {
+            "$schema": "https://json-schema.org/draft/2020-12/schema",
+            "$id": "",
+            "title": "$default",
+            "type": "object",
+            "properties": {
+                "digital_outputs_enabled": {
+                    "title": "Digital Outputs Enabled",
+                    "x-name": "digital_outputs_enabled",
+                    "x-hidden": false,
+                    "type": [
+                        "boolean",
+                        "null"
+                    ],
+                    "x-required": false,
+                    "default": true,
+                    "x-position": 0
+                },
+                "a_funny_message": {
+                    "title": "A Funny Message",
+                    "x-name": "a_funny_message",
+                    "x-hidden": false,
+                    "type": "string",
+                    "x-required": true,
+                    "x-position": 1
+                },
+                "simulator_app_key": {
+                    "title": "Simulator App Key",
+                    "x-name": "simulator_app_key",
+                    "x-hidden": false,
+                    "format": "doover-resource-application",
+                    "type": "string",
+                    "x-required": true,
+                    "description": "The app key for the simulator",
+                    "x-position": 2
+                }
+            },
+            "additionalElements": true,
+            "required": [
+                "a_funny_message",
+                "simulator_app_key"
+            ]
+        },
+        "organisation_id": "FIX-ME"
+    }
+}
