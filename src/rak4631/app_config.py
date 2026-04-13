@@ -4,9 +4,15 @@ from pydoover import config
 from pydoover.processor import ManySubscriptionConfig
 
 
-class G62ProcessorConfig(config.Schema):
+class Rak4631ProcessorConfig(config.Schema):
     subscription = ManySubscriptionConfig(default=["on_tts_event"], hidden=True)
     position = config.ApplicationPosition()
+
+    litres_per_count = config.Number(
+        "Litres per Count",
+        description="How many litres each pulse from the flow meter represents.",
+        default=10.0,
+    )
 
     hide_ui = config.Boolean(
         "Hide Default UI",
@@ -16,7 +22,7 @@ class G62ProcessorConfig(config.Schema):
 
 
 def export():
-    G62ProcessorConfig.export(
+    Rak4631ProcessorConfig.export(
         Path(__file__).parents[2] / "doover_config.json",
-        "g62_processor",
+        "rak4631_processor",
     )

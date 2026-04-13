@@ -543,22 +543,22 @@
         },
         "build_widget_command": null
     },
-    "g62_processor": {
-        "name": "g62_processor",
-        "display_name": "G62 LoRaWAN Vehicle Tracker",
+    "rak4631_processor": {
+        "name": "rak4631_processor",
+        "display_name": "RAK4631 LoRaWAN",
         "type": "PRO",
         "visibility": "PUB",
         "allow_many": false,
-        "description": "Processor for G62 LoRaWAN devices",
+        "description": "Processor for RAK4631 LoRaWAN devices",
         "long_description": "README.md",
         "depends_on": [],
-        "export_config_command": "export-config-g62",
-        "export_ui_command": "export-ui-g62",
+        "export_config_command": "export-config-rak4631",
+        "export_ui_command": "export-ui-rak4631",
         "lambda_config": {
             "Environment": {},
             "Runtime": "python3.13",
             "Timeout": 300,
-            "Handler": "src.g62.handler",
+            "Handler": "src.rak4631.handler",
             "MemorySize": 128,
             "Architectures": [
                 "arm64"
@@ -607,6 +607,19 @@
                     "x-position": 1,
                     "minimum": 0
                 },
+                "litres_per_count": {
+                    "title": "Litres per Count",
+                    "x-name": "litres_per_count",
+                    "x-hidden": false,
+                    "type": [
+                        "number",
+                        "null"
+                    ],
+                    "x-required": false,
+                    "description": "How many litres each pulse from the flow meter represents.",
+                    "default": 10.0,
+                    "x-position": 2
+                },
                 "hide_default_ui": {
                     "title": "Hide Default UI",
                     "x-name": "hide_default_ui",
@@ -618,7 +631,7 @@
                     "x-required": false,
                     "description": "Whether to hide the default UI. Useful if you have a custom UI application.",
                     "default": false,
-                    "x-position": 2
+                    "x-position": 3
                 }
             },
             "additionalElements": true,
@@ -641,209 +654,265 @@
             "type": "uiApplication",
             "name": "$config.app().APP_KEY",
             "children": {
-                "trip_type": {
-                    "name": "trip_type",
+                "level_": {
+                    "name": "level_",
                     "type": "uiVariable",
-                    "displayString": "Trip Type",
+                    "displayString": "Level (%)",
                     "showActivity": true,
+                    "form": "radialGauge",
                     "position": 51,
                     "hidden": false,
-                    "varType": "string",
-                    "currentValue": "$tag.app().trip_type:string:null"
-                },
-                "ignition": {
-                    "name": "ignition",
-                    "type": "uiVariable",
-                    "displayString": "Ignition",
-                    "showActivity": true,
-                    "position": 52,
-                    "hidden": false,
-                    "varType": "bool",
-                    "currentValue": "$tag.app().ignition:boolean:null"
-                },
-                "external_power": {
-                    "name": "external_power",
-                    "type": "uiVariable",
-                    "displayString": "External Power",
-                    "showActivity": true,
-                    "position": 53,
-                    "hidden": false,
-                    "varType": "bool",
-                    "currentValue": "$tag.app().ext_power_good:boolean:null"
-                },
-                "gps_fix_current": {
-                    "name": "gps_fix_current",
-                    "type": "uiVariable",
-                    "displayString": "GPS Fix Current",
-                    "showActivity": true,
-                    "position": 54,
-                    "hidden": false,
-                    "varType": "bool",
-                    "currentValue": "$tag.app().gps_current:boolean:null"
-                },
-                "speed": {
-                    "name": "speed",
-                    "type": "uiVariable",
-                    "displayString": "Speed",
-                    "showActivity": true,
-                    "position": 55,
-                    "hidden": false,
-                    "units": "km/h",
                     "varType": "float",
-                    "currentValue": "$tag.app().speed_kmh:number:null",
-                    "decPrecision": 0
-                },
-                "heading": {
-                    "name": "heading",
-                    "type": "uiVariable",
-                    "displayString": "Heading",
-                    "showActivity": true,
-                    "position": 56,
-                    "hidden": false,
-                    "units": "\u00b0",
-                    "varType": "float",
-                    "currentValue": "$tag.app().heading_deg:number:null",
-                    "decPrecision": 0
-                },
-                "gps_accuracy": {
-                    "name": "gps_accuracy",
-                    "type": "uiVariable",
-                    "displayString": "GPS Accuracy",
-                    "showActivity": true,
-                    "position": 57,
-                    "hidden": false,
-                    "units": "m",
-                    "varType": "float",
-                    "currentValue": "$tag.app().gps_accuracy_m:number:null",
-                    "decPrecision": 0
-                },
-                "battery": {
-                    "name": "battery",
-                    "type": "uiVariable",
-                    "displayString": "Battery",
-                    "showActivity": true,
-                    "position": 58,
-                    "hidden": false,
-                    "units": "V",
-                    "varType": "float",
-                    "currentValue": "$tag.app().battery_v:number:null",
-                    "decPrecision": 2,
+                    "currentValue": "$tag.app().level_pct:number:null",
+                    "decPrecision": 1,
                     "ranges": [
                         {
                             "min": 0,
-                            "max": 3.4,
-                            "colour": "red",
+                            "max": 20,
+                            "colour": "yellow",
                             "show_on_graph": true,
                             "label": "Low"
                         },
                         {
-                            "min": 3.4,
-                            "max": 4.0,
-                            "colour": "yellow",
+                            "min": 20,
+                            "max": 70,
+                            "colour": "blue",
                             "show_on_graph": true,
-                            "label": "OK"
+                            "label": "Half"
                         },
                         {
-                            "min": 4.0,
-                            "max": 5.0,
+                            "min": 70,
+                            "max": 100,
                             "colour": "green",
                             "show_on_graph": true,
-                            "label": "Good"
+                            "label": "Full"
                         }
                     ]
                 },
-                "external_voltage": {
-                    "name": "external_voltage",
+                "current_flow_rate_lmin": {
+                    "name": "current_flow_rate_lmin",
                     "type": "uiVariable",
-                    "displayString": "External Voltage",
+                    "displayString": "Current Flow Rate (L/min)",
                     "showActivity": true,
-                    "position": 59,
+                    "position": 52,
                     "hidden": false,
-                    "units": "V",
                     "varType": "float",
-                    "currentValue": "$tag.app().external_v:number:null",
-                    "decPrecision": 2
+                    "currentValue": "$tag.app().flow_rate_lpm:number:null",
+                    "decPrecision": 1
                 },
-                "analog_input": {
-                    "name": "analog_input",
-                    "type": "uiVariable",
-                    "displayString": "Analog Input",
-                    "showActivity": true,
-                    "position": 60,
-                    "hidden": false,
-                    "units": "V",
-                    "varType": "float",
-                    "currentValue": "$tag.app().analog_input_v:number:null",
-                    "decPrecision": 3
+                "level_low": {
+                    "name": "level_low",
+                    "type": "uiWarningIndicator",
+                    "displayString": "Level Low",
+                    "position": 53,
+                    "hidden": "!$tag.app().level_low_warning",
+                    "currentValue": "$cmds.app().level_low",
+                    "can_cancel": true
                 },
-                "temperature": {
-                    "name": "temperature",
-                    "type": "uiVariable",
-                    "displayString": "Temperature",
-                    "showActivity": true,
-                    "position": 61,
-                    "hidden": false,
-                    "units": "\u00b0C",
-                    "varType": "float",
-                    "currentValue": "$tag.app().temperature_c:number:null",
-                    "decPrecision": 0
+                "battery_low": {
+                    "name": "battery_low",
+                    "type": "uiWarningIndicator",
+                    "displayString": "Battery Low",
+                    "position": 54,
+                    "hidden": "!$tag.app().batt_low_warning",
+                    "currentValue": "$cmds.app().battery_low",
+                    "can_cancel": true
                 },
-                "digital_input_1": {
-                    "name": "digital_input_1",
-                    "type": "uiVariable",
-                    "displayString": "Digital Input 1",
-                    "showActivity": true,
-                    "position": 62,
-                    "hidden": false,
-                    "varType": "bool",
-                    "currentValue": "$tag.app().digital_input_1:boolean:null"
+                "highrate_burst_active": {
+                    "name": "highrate_burst_active",
+                    "type": "uiWarningIndicator",
+                    "displayString": "High-Rate Burst Active",
+                    "position": 55,
+                    "hidden": "!$tag.app().high_rate_warning",
+                    "currentValue": "$cmds.app().highrate_burst_active",
+                    "can_cancel": true
                 },
-                "digital_input_2": {
-                    "name": "digital_input_2",
-                    "type": "uiVariable",
-                    "displayString": "Digital Input 2",
+                "details": {
+                    "name": "details",
+                    "type": "uiSubmodule",
+                    "displayString": "Details",
                     "showActivity": true,
-                    "position": 63,
+                    "position": 69,
                     "hidden": false,
-                    "varType": "bool",
-                    "currentValue": "$tag.app().digital_input_2:boolean:null"
-                },
-                "digital_output": {
-                    "name": "digital_output",
-                    "type": "uiVariable",
-                    "displayString": "Digital Output",
-                    "showActivity": true,
-                    "position": 64,
-                    "hidden": false,
-                    "varType": "bool",
-                    "currentValue": "$tag.app().digital_output:boolean:null"
-                },
-                "runtime": {
-                    "name": "runtime",
-                    "type": "uiVariable",
-                    "displayString": "Runtime",
-                    "showActivity": true,
-                    "position": 65,
-                    "hidden": false,
-                    "units": "s",
-                    "varType": "float",
-                    "currentValue": "$tag.app().runtime_s:number:null",
-                    "decPrecision": 0
-                },
-                "odometer": {
-                    "name": "odometer",
-                    "type": "uiVariable",
-                    "displayString": "Odometer",
-                    "showActivity": true,
-                    "position": 66,
-                    "hidden": false,
-                    "units": "km",
-                    "varType": "float",
-                    "currentValue": "$tag.app().odometer_km:number:null",
-                    "decPrecision": 2
+                    "children": {
+                        "tank_type": {
+                            "name": "tank_type",
+                            "type": "uiSelect",
+                            "displayString": "Tank Type",
+                            "position": 56,
+                            "hidden": false,
+                            "currentValue": "$cmds.app().tank_type",
+                            "options": {
+                                "flat_bottom": {
+                                    "name": "flat_bottom",
+                                    "displayString": "Flat Bottom",
+                                    "type": "uiElement"
+                                },
+                                "horizontal_cylinder": {
+                                    "name": "horizontal_cylinder",
+                                    "displayString": "Horizontal Cylinder",
+                                    "type": "uiElement"
+                                }
+                            }
+                        },
+                        "input_max": {
+                            "name": "input_max",
+                            "type": "uiFloatInput",
+                            "displayString": "Max Level (cm)",
+                            "position": 57,
+                            "hidden": false,
+                            "currentValue": "$cmds.app().input_max",
+                            "min": 0,
+                            "max": 999
+                        },
+                        "input_low_level": {
+                            "name": "input_low_level",
+                            "type": "uiFloatInput",
+                            "displayString": "Low level alarm (%)",
+                            "position": 58,
+                            "hidden": false,
+                            "currentValue": "$cmds.app().input_low_level",
+                            "min": 0,
+                            "max": 99
+                        },
+                        "input_zero_cal": {
+                            "name": "input_zero_cal",
+                            "type": "uiFloatInput",
+                            "displayString": "Zero Calibration (cm)",
+                            "position": 59,
+                            "hidden": false,
+                            "currentValue": "$cmds.app().input_zero_cal",
+                            "min": -999,
+                            "max": 999
+                        },
+                        "input_scaling_cal": {
+                            "name": "input_scaling_cal",
+                            "type": "uiFloatInput",
+                            "displayString": "Scaling Calibration (x multiply)",
+                            "position": 60,
+                            "hidden": false,
+                            "currentValue": "$cmds.app().input_scaling_cal",
+                            "min": -999,
+                            "max": 999
+                        },
+                        "batt_alarm_level": {
+                            "name": "batt_alarm_level",
+                            "type": "uiFloatInput",
+                            "displayString": "Battery Alarm (%)",
+                            "position": 61,
+                            "hidden": false,
+                            "currentValue": "$cmds.app().batt_alarm_level",
+                            "min": 0,
+                            "max": 100
+                        },
+                        "battery_": {
+                            "name": "battery_",
+                            "type": "uiVariable",
+                            "displayString": "Battery (%)",
+                            "showActivity": true,
+                            "position": 62,
+                            "hidden": false,
+                            "varType": "float",
+                            "currentValue": "$tag.app().battery_pct:number:null",
+                            "decPrecision": 0,
+                            "ranges": [
+                                {
+                                    "min": 0,
+                                    "max": 30,
+                                    "colour": "yellow",
+                                    "show_on_graph": true,
+                                    "label": "Low"
+                                },
+                                {
+                                    "min": 30,
+                                    "max": 80,
+                                    "colour": "blue",
+                                    "show_on_graph": true,
+                                    "label": "Half"
+                                },
+                                {
+                                    "min": 80,
+                                    "max": 100,
+                                    "colour": "green",
+                                    "show_on_graph": true,
+                                    "label": "Full"
+                                }
+                            ]
+                        },
+                        "total_litres": {
+                            "name": "total_litres",
+                            "type": "uiVariable",
+                            "displayString": "Total Litres (L)",
+                            "showActivity": true,
+                            "position": 63,
+                            "hidden": false,
+                            "varType": "float",
+                            "currentValue": "$tag.app().total_litres:number:null",
+                            "decPrecision": 1
+                        },
+                        "raw_current_ma": {
+                            "name": "raw_current_ma",
+                            "type": "uiVariable",
+                            "displayString": "Raw Level Reading (mA)",
+                            "showActivity": true,
+                            "position": 64,
+                            "hidden": false,
+                            "varType": "float",
+                            "currentValue": "$tag.app().raw_current_ma:number:null",
+                            "decPrecision": 2
+                        },
+                        "raw_current_cm": {
+                            "name": "raw_current_cm",
+                            "type": "uiVariable",
+                            "displayString": "Raw Level Reading (cm)",
+                            "showActivity": true,
+                            "position": 65,
+                            "hidden": false,
+                            "varType": "float",
+                            "currentValue": "$tag.app().raw_current_cm:number:null",
+                            "decPrecision": 1
+                        },
+                        "count_reading": {
+                            "name": "count_reading",
+                            "type": "uiVariable",
+                            "displayString": "Last Raw Count",
+                            "showActivity": true,
+                            "position": 66,
+                            "hidden": false,
+                            "varType": "float",
+                            "currentValue": "$tag.app().count_reading:number:null",
+                            "decPrecision": 0
+                        },
+                        "total_count": {
+                            "name": "total_count",
+                            "type": "uiVariable",
+                            "displayString": "Raw Count Total",
+                            "showActivity": true,
+                            "position": 67,
+                            "hidden": false,
+                            "varType": "float",
+                            "currentValue": "$tag.app().total_count:number:null",
+                            "decPrecision": 0
+                        },
+                        "raw_battery_v": {
+                            "name": "raw_battery_v",
+                            "type": "uiVariable",
+                            "displayString": "Battery (V)",
+                            "showActivity": true,
+                            "position": 68,
+                            "hidden": false,
+                            "varType": "float",
+                            "currentValue": "$tag.app().raw_battery_v:number:null",
+                            "decPrecision": 2
+                        }
+                    },
+                    "defaultOpen": true
                 }
             }
         },
+        "key": null,
+        "owner_org_id": null,
+        "code_repo_id": null,
         "build_args": null,
         "icon_url": null,
         "staging_config": {
@@ -855,18 +924,14 @@
                 },
                 "Runtime": "python3.13",
                 "Timeout": 60,
-                "Handler": "src.g62.handler",
+                "Handler": "src.rak4631.handler",
                 "MemorySize": 128,
                 "Architectures": [
                     "arm64"
                 ]
-            },
-            "id": 169300255068661510
+            }
         },
         "build_widget_command": null,
-        "id": null,
-        "key": null,
-        "owner_org_id": null,
-        "code_repo_id": null
+        "id": 169346688421481473
     }
 }
