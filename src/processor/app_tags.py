@@ -7,4 +7,5 @@ class TtsTags(Tags):
     frame_counter = Tag("integer", default=None)
     frequency = Tag("string", default=None)
     data_rate = Tag("string", default=None)
+    gateway = Tag("string", default=None)
     decoded_payload = Tag("object", default=None)

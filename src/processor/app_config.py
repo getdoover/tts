@@ -5,11 +5,14 @@ from pydoover.processor import ManySubscriptionConfig, SerialNumberConfig
 
 
 class TtsProcessorConfig(config.Schema):
-    subscription = ManySubscriptionConfig(default=["on_tts_event"])
+    subscription = ManySubscriptionConfig(default=["on_tts_event"], hidden=True)
     position = config.ApplicationPosition()
-    serial_number = SerialNumberConfig(
-        description="TTS Device Name (e.g. eui-70b3-d57e-d004-8ea5)",
-    )
+    # this should be populated by the integration (there's some funny business on auto-fetching/creating device id from tts)
+    # serial_number = SerialNumberConfig(
+    #     # description="TTS Device Name (e.g. eui-70b3-d57e-d004-8ea5)",
+    #     hidden=True,
+    #     default="",
+    # )
 
     hide_ui = config.Boolean(
         "Hide Default UI",

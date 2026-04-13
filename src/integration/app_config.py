@@ -20,6 +20,11 @@ class TtsIntegrationConfig(config.Schema):
         description="TTS cluster hostname (e.g. au1.cloud.thethings.network)",
         default="au1.cloud.thethings.network",
     )
+    tts_identity_host = config.String(
+        "TTS Identity Server Host",
+        description="Identity server hostname, if different from the cluster host (e.g. eu1.cloud.thethings.network)",
+        default="eu1.cloud.thethings.network",
+    )
 
     integration = IngestionEndpointConfig()
 

@@ -34,7 +34,7 @@ This app uses the pydoover 1.0 declarative API. Key patterns:
 - Use `@ui.handler("element_name")` for UI interaction callbacks (signature: `self, ctx, value`)
 - Access config via `self.config.<field>.value`, tags via `self.tags.<name>.set(val)` / `.get()`
 - Cross-app tags: `self.get_tag("tag_name", app_key)`
-- Messaging: `await self.create_message(channel, {data})`
+- Messaging: `await self.api.create_message(channel_name, {data})` (e.g. publish GPS to `"location"` as `{"lat": ..., "lng": ...}`)
 
 ### Config (app_config.py)
 - Subclass `config.Schema` with class-level `config.Boolean`, `config.String`, `config.Application`, etc.

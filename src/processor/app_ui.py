@@ -47,6 +47,11 @@ class TtsUI(ui.UI, hidden="$config.app().hide_ui"):
         value=TtsTags.data_rate,
     )
 
+    gateway = ui.TextVariable(
+        "Gateway",
+        value=TtsTags.gateway,
+    )
+
 
 def export():
     TtsUI(None, None, None).export(

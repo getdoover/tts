@@ -63,6 +63,7 @@ class TtsProcessor(Application):
             best = max(rx_metadata, key=lambda r: r.get("rssi", -999))
             await self.tags.rssi.set(best.get("rssi"))
             await self.tags.snr.set(best.get("snr"))
+            await self.tags.gateway.set(best.get("gateway_ids", {}).get("gateway_id"))
 
         # Frequency and data rate from settings
         settings = uplink.get("settings", {})
