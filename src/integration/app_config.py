@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from pydoover import config
-from pydoover.processor import IngestionEndpointConfig, ExtendedPermissionsConfig
+from pydoover.processor import IngestionEndpointConfig, ExtendedPermissionsConfig, EgressChannelConfig
 
 
 class TtsIntegrationConfig(config.Schema):
@@ -27,6 +27,7 @@ class TtsIntegrationConfig(config.Schema):
     )
 
     integration = IngestionEndpointConfig()
+    egress_channel = EgressChannelConfig(default="tts_downlink_request")
 
 
 def export():

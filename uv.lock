@@ -562,8 +562,8 @@ wheels = [
 
 [[package]]
 name = "pydoover"
-version = "1.0.0a7"
-source = { git = "https://github.com/getdoover/pydoover#18b24050bf0f688e1df029e8940eb722ca8e9fa0" }
+version = "1.0.0a9"
+source = { git = "https://github.com/getdoover/pydoover#a33ed360d3cb7efc54ddee8bfd4ac582034ec275" }
 dependencies = [
     { name = "aiohttp" },
     { name = "httpx" },
@@ -612,6 +612,7 @@ name = "tts-connector"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
+    { name = "httpx" },
     { name = "pydoover" },
 ]
 
@@ -622,7 +623,10 @@ dev = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "pydoover", git = "https://github.com/getdoover/pydoover" }]
+requires-dist = [
+    { name = "httpx", specifier = ">=0.28.1" },
+    { name = "pydoover", git = "https://github.com/getdoover/pydoover" },
+]
 
 [package.metadata.requires-dev]
 dev = [

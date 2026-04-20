@@ -5,7 +5,8 @@ description = "Doover integration for LoRaWAN devices via The Things Stack"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
-    "pydoover==1.0.0a7",
+    "httpx>=0.28.1",
+    "pydoover>=1.0.0a9",
 ]
 
 [project.scripts]

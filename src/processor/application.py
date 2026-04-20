@@ -10,6 +10,10 @@ from .app_ui import TtsUI
 
 log = logging.getLogger(__name__)
 
+# Channel on the integration's agent that triggers a downlink publish.
+# Mirrors the constant in integration.application.
+DOWNLINK_REQUEST_CHANNEL = "tts_downlink_request"
+
 
 class TtsProcessor(Application):
     config_cls = TtsProcessorConfig
@@ -81,3 +85,22 @@ class TtsProcessor(Application):
         decoded = uplink.get("decoded_payload")
         if decoded:
             await self.tags.decoded_payload.set(decoded)
+
+    async def send_downlink(self, payload, *, f_port: int = 1, confirmed: bool = False) -> None:
+        """
+        Request a downlink publish via the integration. Fire-and-forget —
+        the integration has an egress subscription on this channel and
+        recovers the TTS device_id from the source agent_id, so the
+        payload doesn't need to carry it.
+
+        `payload` may be a dict (sent as decoded_payload), bytes (raw
+        frame), or a hex-encoded string.
+        """
+        await self.api.create_message(
+            DOWNLINK_REQUEST_CHANNEL,
+            {
+                "f_port": f_port,
+                "payload": payload,
+                "confirmed": confirmed,
+            },
+        )
